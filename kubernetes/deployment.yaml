@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentllm-proxy
+  labels:
+    app: agentllm-proxy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: agentllm-proxy
+  template:
+    metadata:
+      labels:
+        app: agentllm-proxy
+    spec:
+      containers:
+      - name: proxy
+        image: agentllm:latest
+        ports:
+        - containerPort: 8890
+          name: http
+        env:
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: agentllm-secrets
+              key: gemini-api-key
+        - name: LITELLM_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: agentllm-secrets
+              key: litellm-master-key
+        - name: JIRA_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: agentllm-config
+              key: jira-server-url
+        - name: GDRIVE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: agentllm-secrets
+              key: gdrive-client-id
+        - name: GDRIVE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: agentllm-secrets
+              key: gdrive-client-secret
+        volumeMounts:
+        - name: data
+          mountPath: /app/tmp
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8890
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8890
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: agentllm-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentllm-proxy-service
+spec:
+  selector:
+    app: agentllm-proxy
+  ports:
+  - protocol: TCP
+    port: 8890
+    targetPort: 8890
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: agentllm-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

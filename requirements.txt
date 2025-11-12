@@ -1,0 +1,15 @@
+# AgentLLM deployment dependencies
+#
+# Update versions as needed for production deployments
+
+# Core framework
+git+https://github.com/yourorg/agentllm-core.git@v0.1.0
+
+# Agent packages
+git+https://github.com/yourorg/agentllm-agents-rhdh.git@v1.0.0
+git+https://github.com/yourorg/agentllm-agents-demo.git@v1.0.0
+
+# When published to PyPI, use:
+# agentllm-core==0.1.0
+# agentllm-agents-rhdh==1.0.0
+# agentllm-agents-demo==1.0.0

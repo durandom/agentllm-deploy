@@ -1,0 +1,38 @@
+# LiteLLM Proxy Configuration
+#
+# This file is auto-generated from discovered agents.
+# Agents are discovered via Python entry points at startup.
+
+model_list:
+  # Agents are dynamically discovered via entry points
+  # Add manual entries here if needed for specific configurations
+
+  - model_name: agno/release-manager
+    litellm_params:
+      model: agno/release-manager
+      custom_llm_provider: agno
+    model_info:
+      description: "RHDH Release management assistant"
+      mode: chat
+
+  - model_name: agno/demo-agent
+    litellm_params:
+      model: agno/demo-agent
+      custom_llm_provider: agno
+    model_info:
+      description: "Demo agent with color tools"
+      mode: chat
+
+litellm_settings:
+  drop_params: true
+  success_callback: []
+  failure_callback: []
+
+  # Custom provider map for agno handler
+  custom_provider_map:
+    - provider: "agno"
+      custom_handler: custom_handler.agno_handler
+
+general_settings:
+  master_key: ${LITELLM_MASTER_KEY}
+  store_model_in_db: false

@@ -1,0 +1,50 @@
+services:
+  litellm-proxy:
+    build:
+      context: .
+      dockerfile: Containerfile
+      target: final
+      args:
+        CORE_VERSION: "0.1.0"
+        RHDH_VERSION: "1.0.0"
+        DEMO_VERSION: "1.0.0"
+        INSTALL_DEMO: "true"
+    image: agentllm:latest
+    container_name: agentllm-proxy
+    ports:
+      - "8890:8890"
+    environment:
+      # Required
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-sk-agno-test-key-12345}
+
+      # RHDH agent configuration
+      - JIRA_SERVER_URL=${JIRA_SERVER_URL}
+      - GDRIVE_CLIENT_ID=${GDRIVE_CLIENT_ID}
+      - GDRIVE_CLIENT_SECRET=${GDRIVE_CLIENT_SECRET}
+      - RELEASE_MANAGER_SYSTEM_PROMPT_GDRIVE_URL=${RELEASE_MANAGER_SYSTEM_PROMPT_GDRIVE_URL}
+
+      # Logging
+      - LOG_LEVEL=INFO
+    volumes:
+      # Persist database
+      - ./tmp:/app/tmp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8890/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: OpenWebUI integration
+  # open-webui:
+  #   image: ghcr.io/open-webui/open-webui:main
+  #   container_name: open-webui
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - OPENAI_API_BASE_URL=http://litellm-proxy:8890/v1
+  #     - OPENAI_API_KEY=${LITELLM_MASTER_KEY}
+  #   depends_on:
+  #     - litellm-proxy
