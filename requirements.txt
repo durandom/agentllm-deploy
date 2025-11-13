@@ -3,11 +3,11 @@
 # Update versions as needed for production deployments
 
 # Core framework
-git+https://github.com/yourorg/agentllm-core.git@v0.1.0
+git+https://github.com/durandom/agentllm-core.git@v0.1.0
 
 # Agent packages
-git+https://github.com/yourorg/agentllm-agents-rhdh.git@v1.0.0
-git+https://github.com/yourorg/agentllm-agents-demo.git@v1.0.0
+git+https://github.com/durandom/agentllm-agents-rhdh.git@v1.0.0
+git+https://github.com/durandom/agentllm-agents-demo.git@v1.0.0
 
 # When published to PyPI, use:
 # agentllm-core==0.1.0

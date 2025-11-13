@@ -51,7 +51,7 @@ RUN echo "Installing agentllm-core==${CORE_VERSION}"
 
 # Option 2: Install from git repository
 RUN pip install --no-cache-dir \
-    git+https://github.com/yourorg/agentllm-core.git@v${CORE_VERSION}
+    git+https://github.com/durandom/agentllm-core.git@v${CORE_VERSION}
 
 # Option 3: Install from local wheel (for air-gapped environments)
 # COPY wheels/agentllm_core-${CORE_VERSION}-py3-none-any.whl /tmp/
@@ -74,7 +74,7 @@ RUN echo "Installing agentllm-agents-rhdh==${RHDH_VERSION}"
 
 # Option 2: Install from git repository
 RUN pip install --no-cache-dir \
-    git+https://github.com/yourorg/agentllm-agents-rhdh.git@v${RHDH_VERSION}
+    git+https://github.com/durandom/agentllm-agents-rhdh.git@v${RHDH_VERSION}
 
 # Verify installation
 RUN python -c "from agentllm_agents_rhdh import ReleaseManagerFactory; print('RHDH agents installed')"
@@ -90,7 +90,7 @@ ARG INSTALL_DEMO=true
 RUN if [ "$INSTALL_DEMO" = "true" ]; then \
     echo "Installing agentllm-agents-demo==${DEMO_VERSION}" && \
     pip install --no-cache-dir \
-        git+https://github.com/yourorg/agentllm-agents-demo.git@v${DEMO_VERSION} && \
+        git+https://github.com/durandom/agentllm-agents-demo.git@v${DEMO_VERSION} && \
     python -c "from agentllm_agents_demo import DemoAgentFactory; print('Demo agents installed')"; \
     else \
     echo "Skipping demo agents installation"; \
